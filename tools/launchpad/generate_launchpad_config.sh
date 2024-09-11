@@ -47,10 +47,8 @@ SUPPORTED_APPS=`echo $SUPPORTED_APPS | sed 's/\(.*\),/\1/'`
 echo "$SUPPORTED_APPS" >> $OUT_FILE
 echo "" >> $OUT_FILE
 
-targets=("esp32-s3" "esp32-c6" "esp32-p4")
-
 # build config for each app
-targets=("esp32-s3" "esp32-c6" "esp32-p4")
+targets=("esp32-s3" "esp32-c6" "esp32-p4", "esp32-c2")
 
 for app in "${APPS[@]}"
 do
@@ -63,6 +61,10 @@ do
         tUP=$(echo "$target" | tr 'a-z' 'A-Z')
 
         if [[ $app == *"c6"* && $target == "esp32-c6" ]]; then
+            CHIPSETS+="\"$tUP\","
+            image="image.$target = \"$app.bin\""
+            IMAGES+=("$image")
+        elif [[ $app == *"c2"* && $target == "esp32-c2" ]]; then
             CHIPSETS+="\"$tUP\","
             image="image.$target = \"$app.bin\""
             IMAGES+=("$image")
