@@ -48,7 +48,7 @@ echo "$SUPPORTED_APPS" >> $OUT_FILE
 echo "" >> $OUT_FILE
 
 # build config for each app
-targets=("esp32-s3" "esp32-c6" "esp32-p4", "esp32-c2")
+targets=("esp32-s3" "esp32-c6" "esp32-p4" "esp32-c2")
 
 for app in "${APPS[@]}"
 do
@@ -60,11 +60,8 @@ do
     for target in "${targets[@]}"; do
         tUP=$(echo "$target" | tr 'a-z' 'A-Z')
 
+        # Check for specific conditions including the new "c2" condition
         if [[ $app == *"c6"* && $target == "esp32-c6" ]]; then
-            CHIPSETS+="\"$tUP\","
-            image="image.$target = \"$app.bin\""
-            IMAGES+=("$image")
-        elif [[ $app == *"c2"* && $target == "esp32-c2" ]]; then
             CHIPSETS+="\"$tUP\","
             image="image.$target = \"$app.bin\""
             IMAGES+=("$image")
@@ -72,7 +69,11 @@ do
             CHIPSETS+="\"$tUP\","
             image="image.$target = \"$app.bin\""
             IMAGES+=("$image")
-        elif [[ $app != *"c6"* && $app != *"p4"* ]]; then
+        elif [[ $app == *"c2"* && $target == "esp32-c2" ]]; then
+            CHIPSETS+="\"$tUP\","
+            image="image.$target = \"$app.bin\""
+            IMAGES+=("$image")
+        elif [[ $app != *"c6"* && $app != *"p4"* && $app != *"c2"* ]]; then
             CHIPSETS+="\"$tUP\","
             image="image.$target = \"$app.bin\""
             IMAGES+=("$image")
