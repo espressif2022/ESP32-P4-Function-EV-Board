@@ -48,7 +48,7 @@ jobs:
           mv $GITHUB_WORKSPACE/bin/*.bin $GITHUB_WORKSPACE/images/
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-images
           path: images/
@@ -67,7 +67,7 @@ jobs:
           submodules: 'recursive'
 
       - name: Download builds
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-images
           path: images/
@@ -83,10 +83,10 @@ jobs:
         uses: actions/configure-pages@v2
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           path: images/
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4
