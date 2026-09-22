@@ -48,7 +48,8 @@ echo "$SUPPORTED_APPS" >> $OUT_FILE
 echo "" >> $OUT_FILE
 
 # build config for each app
-targets=("esp32-s3" "esp32-c6" "esp32-p4" "esp32-c2")
+# Match s31 before s3: the filename "s31" contains the substring "s3".
+targets=("esp32-s31" "esp32-s3" "esp32-c6" "esp32-p4" "esp32-c2")
 
 for app in "${APPS[@]}"
 do
@@ -60,8 +61,12 @@ do
     for target in "${targets[@]}"; do
         tUP=$(echo "$target" | tr 'a-z' 'A-Z')
 
-        # Check for specific conditions including the new "c2" condition
-        if [[ $app == *"c6"* && $target == "esp32-c6" ]]; then
+        # Match s31 before any s3 rule. Unmarked firmware stays on the original four targets.
+        if [[ $app == *"s31"* && $target == "esp32-s31" ]]; then
+            CHIPSETS+="\"$tUP\","
+            image="image.$target = \"$app.bin\""
+            IMAGES+=("$image")
+        elif [[ $app == *"c6"* && $target == "esp32-c6" ]]; then
             CHIPSETS+="\"$tUP\","
             image="image.$target = \"$app.bin\""
             IMAGES+=("$image")
@@ -73,14 +78,14 @@ do
             CHIPSETS+="\"$tUP\","
             image="image.$target = \"$app.bin\""
             IMAGES+=("$image")
-        elif [[ $app != *"c6"* && $app != *"p4"* && $app != *"c2"* ]]; then
+        elif [[ $target != "esp32-s31" && $app != *"s31"* && $app != *"c6"* && $app != *"p4"* && $app != *"c2"* ]]; then
             CHIPSETS+="\"$tUP\","
             image="image.$target = \"$app.bin\""
             IMAGES+=("$image")
         fi
     done
 
-    # 关闭 CHIPSETS 列表并移除最后一个逗号
+    # Close the chipsets list and drop the trailing comma.
     CHIPSETS="${CHIPSETS%,}]"
 
     echo $CHIPSETS >> $OUT_FILE
@@ -90,7 +95,7 @@ do
         echo $img >> $OUT_FILE
     done
 
-    # TODO: 更新安卓应用链接，当它在安卓应用商店可用时
+    # TODO: Update the Android app link when it is available on the Play Store.
     echo "ios_app_url = \"\"" >> $OUT_FILE
     echo "android_app_url = \"\"" >> $OUT_FILE
     echo "" >> $OUT_FILE
